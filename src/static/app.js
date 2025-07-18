@@ -20,11 +20,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft = details.max_participants - details.participants.length;
 
+        // Modern participant list with avatars
+        let participantsHtml = "";
+        if (details.participants.length > 0) {
+          participantsHtml = `
+            <p><strong>Participants:</strong></p>
+            <ul class="participants-list">
+              ${details.participants.map(email => {
+                // Get initials from email
+                const initials = email
+                  .split("@")[0]
+                  .split(/[.\-_]/)
+                  .map(part => part[0])
+                  .join("")
+                  .toUpperCase()
+                  .slice(0,2);
+                return `
+                  <li class="participant-item">
+                    <span class="participant-avatar">${initials}</span>
+                    <span title="${email}">${email}</span>
+                  </li>
+                `;
+              }).join("")}
+            </ul>
+          `;
+        } else {
+          participantsHtml = `<p><strong>Participants:</strong> None yet</p>`;
+        }
+
         activityCard.innerHTML = `
           <h4>${name}</h4>
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+          ${participantsHtml}
         `;
 
         activitiesList.appendChild(activityCard);
